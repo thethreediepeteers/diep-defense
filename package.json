@@ -1,8 +1,8 @@
 {
     "name": "diep-defense",
+    "type": "module",
     "private": true,
     "dependencies": {
-        "express": "^4.18.2",
         "ws": "^8.14.2"
     }
 }
