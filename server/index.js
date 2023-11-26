@@ -17,9 +17,10 @@ class Vector {
 class Entity {
     static instances = new Map();
     static index = 0;
-    constructor(x, y) {
+    constructor(x, y, width, height) {
         this.index = Entity.index++;
         this.position = new Vector(x, y);
+        this.size = new Vector(width, height);
         this.velocity = new Vector(0, 0);
     }
 
@@ -87,6 +88,7 @@ class Server {
             return;
         }
         const path = parse(request.url).pathname?.replace(/\/+$/, "") ?? "/";
+
         if (this.getMethods.has(path)) {
             this.getMethods.get(path)(request, response);
             return;
@@ -107,8 +109,28 @@ class Server {
             response.end("404");
             return;
         }
-        response.writeHead(200, { "Access-Control-Allow-Origin": "*" });
+        response.writeHead(200, { "Access-Control-Allow-Origin": "*", "Content-Type": this.getContentType(filePath) });
         response.end(readFileSync(filePath));
+    }
+
+    static getContentType(filePath) {
+        const ext = filePath.split(".").pop();
+        switch (ext) {
+            case "html":
+                return "text/html";
+
+            case "css":
+                return "text/css";
+
+            case "js":
+                return "application/javascript";
+
+            case "ico":
+                return "image/x-icon";
+
+            default:
+                return "text/plain";
+        }
     }
 
     static connectionEvent(socket, request) {

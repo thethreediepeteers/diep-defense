@@ -2,6 +2,9 @@
     "name": "diep-defense",
     "type": "module",
     "private": true,
+    "scripts": {
+        "start": "bun run --watch server/index.js"
+    },
     "dependencies": {
         "ws": "^8.14.2"
     }
