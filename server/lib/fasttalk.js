@@ -1,17 +1,17 @@
 /*  @license GPL-2.0+ */
 /*
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 2 of the License, or
-    (at your option) any later version.
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 2 of the License, or
+	(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 "use strict";
 /** Header Codes
@@ -46,15 +46,15 @@
  * 
  * When the data is being compressed, each element of the array is labeled to one of 12 types, which is the first 12 header codes in the table above. If more than 3 header codes of the same type is used, they are compressed into shorter blocks to indicate repeats.
  */
-const protocol2 = {};
-protocol2.decode = function (arraybuffer) {
+const protocol = {};
+protocol.decode = function (arraybuffer) {
 	let isStart = true;
 	let rawtypecodes = [];
 	let lastTC = 0;
 	let flagged = false;
 	let dv = new DataView(arraybuffer);
 	let dvi = 0;
-	out: for (dvi = 0;; ++dvi) {
+	out: for (dvi = 0; ; ++dvi) {
 		for (let j = 0; j < 2; ++j) {
 			const halfbyte = j === 0 ? dv.getUint8(dvi) >> 4 : dv.getUint8(dvi) & 0b1111;
 			if (flagged) {
@@ -94,12 +94,12 @@ protocol2.decode = function (arraybuffer) {
 			case 0b0111: output.push(dv.getUint32(dvi, true) - 4294967296); dvi += 4; break;
 			case 0b1000: output.push(dv.getFloat32(dvi, true)); dvi += 4; break;
 			case 0b1001: { /* Single character string */
-        const value = dv.getUint8(dvi++);
-        if (value !== 0)
-          output.push(String.fromCharCode(value));
-        else output.push("");
-        break;
-      }
+				const value = dv.getUint8(dvi++);
+				if (value !== 0)
+					output.push(String.fromCharCode(value));
+				else output.push("");
+				break;
+			}
 			// Could these be faster if we built an array and then called String.fromCharCode with the spread operator?
 			case 0b1010: {
 				let s = '';
@@ -123,7 +123,7 @@ protocol2.decode = function (arraybuffer) {
 	}
 	return output;
 }
-protocol2.encode = function (data) {
+protocol.encode = function (data) {
 	let lastTc = null;
 	let nLast = 0;
 	let typecodes = [];
@@ -140,7 +140,7 @@ protocol2.encode = function (data) {
 		} else if (Math.floor(datum) === datum) {
 			const sbit = +(datum < 0);
 			const abs = Math.abs(datum);
-      /* Difference: 0 is encoded as "false" */
+			/* Difference: 0 is encoded as "false" */
 			if (abs <= 255) {
 				bodySize += 1;
 				tC = 0b0010 | sbit;
@@ -209,16 +209,16 @@ protocol2.encode = function (data) {
 	typecodes.push(0b1111);
 	if (typecodes.length % 2 !== 0)
 		typecodes.push(0b1111);
-	let dv = new DataView(new ArrayBuffer(typecodes.length/2 + bodySize));
+	let dv = new DataView(new ArrayBuffer(typecodes.length / 2 + bodySize));
 	let dvi = 0;
 	for (let i = 0; i < typecodes.length; i += 2) {
-		dv.setUint8(dvi, typecodes[i] << 4 | typecodes[i+1]);
+		dv.setUint8(dvi, typecodes[i] << 4 | typecodes[i + 1]);
 		dvi += 1;
 	}
 	for (let i = 0; i < data.length; ++i) {
 		const datum = data[i];
 		switch (rawtypecodes[i]) {
-			case 0b0010: dv.setUint8(dvi,  datum); dvi += 1; break;
+			case 0b0010: dv.setUint8(dvi, datum); dvi += 1; break;
 			case 0b0011: dv.setUint8(dvi, 256 + datum); dvi += 1; break;
 			case 0b0100: dv.setUint16(dvi, datum, true); dvi += 2; break;
 			case 0b0101: dv.setUint16(dvi, 65536 + datum, true); dvi += 2; break;
@@ -232,7 +232,7 @@ protocol2.encode = function (data) {
 			}
 			case 0b1010: {
 				for (let j = 0; j < datum.length; ++j) {
-          // string returns NaN for out-of-bounds charCodeAt access
+					// string returns NaN for out-of-bounds charCodeAt access
 					dv.setUint8(dvi, datum.charCodeAt(j))
 					dvi += 1;
 				}
@@ -254,4 +254,4 @@ protocol2.encode = function (data) {
 	return new Uint8Array(dv.buffer);
 }
 
-export default protocol2;
+export { protocol };

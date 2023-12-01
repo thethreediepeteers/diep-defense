@@ -2,7 +2,7 @@ import { Server as httpServer } from "http";
 import { WebSocketServer } from "ws";
 import { existsSync, statSync, readFileSync } from "fs";
 import { parse } from "url";
-import protocol from "./fasttalk";
+import { protocol } from "../global";
 
 export class Client {
     static instances = new Map();
