@@ -1,7 +1,7 @@
 import { protocol, player, entities } from "./global.js";
 
 const initSocket = () => {
-    const socket = new WebSocket("ws://localhost:3001/");
+    const socket = new WebSocket(`wss://${location.hostname}/`); // localhost only works wi
     socket.binaryType = "arraybuffer";
     socket.onopen = () => {
         console.log("Connected to server.");

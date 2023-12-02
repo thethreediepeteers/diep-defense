@@ -1,4 +1,4 @@
-import { Entity, Client } from "../global";
+import { Entity, Client } from "../global.js";
 const loop = setInterval(function () {
     const startTime = performance.now();
     for (const entity of Entity.instances.values()) entity.tick();

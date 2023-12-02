@@ -1,4 +1,4 @@
-import { Vector, AABB, quad } from "../global";
+import { Vector, AABB, quad } from "../global.js";
 
 class Entity { // entity class
     static instances = new Map();

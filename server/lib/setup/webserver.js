@@ -2,7 +2,7 @@ import { Server as httpServer } from "http";
 import { WebSocketServer } from "ws";
 import { existsSync, statSync, readFileSync } from "fs";
 import { parse } from "url";
-import { Client } from "../global";
+import { Client } from "../global.js";
 
 class Server {
     static directory = "./public";

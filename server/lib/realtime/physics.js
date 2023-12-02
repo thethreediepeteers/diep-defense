@@ -1,4 +1,4 @@
-import { arena } from "../global";
+import { arena } from "../global.js";
 
 class Vector { 
     constructor(x = 0, y = 0) {

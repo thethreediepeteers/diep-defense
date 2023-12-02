@@ -1,4 +1,4 @@
-import { Entity, protocol, arena, quad, AABB } from "../global";
+import { Entity, protocol, arena, quad, AABB } from "../global.js";
 
 export class Client extends Entity {
     static instances = new Map();
