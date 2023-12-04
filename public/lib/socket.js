@@ -1,7 +1,7 @@
-import { protocol, player, entities } from "./global.js";
+import { protocol, entities, my } from "./global.js";
 
 const initSocket = () => {
-    const socket = new WebSocket(`wss://${location.hostname}/`); // localhost only works wi
+    const socket = new WebSocket(`ws://localhost:3001/`); // localhost only works wi
     socket.binaryType = "arraybuffer";
     socket.onopen = () => {
         console.log("Connected to server.");
@@ -23,9 +23,7 @@ function handleMessage(message) {
     if (!m) return;
     switch (m.shift()) {
         case 0:
-            player.myIndex = m[0];
-            player.x = m[1];
-            player.y = m[2];
+            my.index = m[0];
             break;
 
         case 1:
@@ -35,11 +33,12 @@ function handleMessage(message) {
                 const existingIndex = entities.findIndex((e) => e.index === entity.index);
                 if (existingIndex !== -1) {
                     entities[existingIndex] = entity;
-                } 
+                }
                 else {
                     entities.push(entity);
                 }
             }
+            my.me = entities[entities.findIndex((e) => e.index == my.index)];
             break;
 
         default:

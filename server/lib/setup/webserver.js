@@ -75,7 +75,7 @@ class Server {
             return;
         }
         const client = new Client(socket, address);
-        const message = [0, client.index, client.position.x, client.position.y];
+        const message = [0, client.index];
         client.talk(message);
     }
 

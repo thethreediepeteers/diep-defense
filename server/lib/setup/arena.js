@@ -1,6 +1,6 @@
 const arena = {
-    width: 1600,
-    height: 900
+    width: 1000,
+    height: 1000
 }
 
 export { arena };
