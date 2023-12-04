@@ -2,6 +2,7 @@
     "name": "diep-defense",
     "type": "module",
     "private": true,
+    "engines": {"node": "16.x"},
     "scripts": {
         "run": "bun run --watch server/index.js",
         "start": "node server/index.js"
