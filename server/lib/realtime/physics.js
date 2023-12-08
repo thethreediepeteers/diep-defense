@@ -1,34 +1,35 @@
 import { arena } from "../global.js";
 
-class Vector { 
+class Vector {
     constructor(x = 0, y = 0) {
         this.x = x;
         this.y = y;
     }
 
-    add(vec) {
-        this.x += vec.x;
-        this.y += vec.y;
+    add(other) {
+        this.x += other.x;
+        this.y += other.y;
     }
 
-    subtract(vec) {
-        this.x -= vec.x;
-        this.y -= vec.y;
+    subtract(other) {
+        this.x -= other.x;
+        this.y -= other.y;
     }
 
-    multiply(vec) {
-        this.x *= vec.x;
-        this.y *= vec.y;
+    multiply(other) {
+        this.x *= other.x;
+        this.y *= other.y;
     }
 
-    divide(vec) {
-        this.x /= vec.x;
-        this.y /= vec.y;
+    divide(other) {
+        this.x /= other.x;
+        this.y /= other.y;
     }
 }
 
 class AABB { // box for collision and stuff
-    constructor(centerX, centerY, halfWidth, halfHeight) {
+    constructor(centerX, centerY, halfWidth, halfHeight, index) {
+        this.index = index;
         this.center = new Vector(centerX, centerY);
         this.halfWidth = halfWidth;
         this.halfHeight = halfHeight;
@@ -93,7 +94,9 @@ class QuadTree { // faster collision grid    https://en.wikipedia.org/wiki/Quadt
         if (!this.bounds.intersects(range)) return output;
 
         for (let i = 0; i < this.objects.length; i++) {
-            if (range.intersects(this.objects[i])) output.push(this.objects[i]);
+            if (range.intersects(this.objects[i])) {
+                if (range.index !== this.objects[i].index) output.push(this.objects[i]);
+            }
         }
 
         if (!this.nodes.length) return output;
@@ -104,8 +107,18 @@ class QuadTree { // faster collision grid    https://en.wikipedia.org/wiki/Quadt
 
         return output;
     }
+
+    clear() { // clears all objects from tree
+        this.objects = [];
+
+        for (let i = 0; i < this.nodes.length; i++) {
+            this.nodes[i].clear();
+        }
+
+        this.nodes = [];
+    }
 }
 
-const quad = new QuadTree(new AABB(arena.width / 2, arena.height / 2, arena.width / 2, arena.height / 2), 5);
+const quad = new QuadTree(new AABB(0, 0, 1000, 1000), 5);
 
 export { quad, Vector, AABB };

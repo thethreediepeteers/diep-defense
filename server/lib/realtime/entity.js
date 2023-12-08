@@ -27,7 +27,7 @@ class Entity { // entity class
     }
 
     getAABB() { // returns a new AABB for collision and stuff
-        return new AABB(this.position.x, this.position.y, this.size.x / 2, this.size.y / 2);
+        return new AABB(this.position.x, this.position.y, this.size.x / 2, this.size.y / 2, this.index);
     }
 }
 

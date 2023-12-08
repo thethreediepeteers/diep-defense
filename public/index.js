@@ -1,4 +1,4 @@
 import * as global from "./lib/global.js";
-const { render } = global;
+const { update } = global;
 
-render();
+update();

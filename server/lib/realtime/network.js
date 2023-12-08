@@ -4,7 +4,7 @@ export class Client extends Entity {
     static instances = new Map();
 
     constructor(socket, address) {
-        super(Math.random() * arena.width, Math.random() * arena.height, 50, 50);
+        super(0, 0, 50, 50);
         this.socket = socket;
         this.address = address;
         Client.instances.set(this.index, this);
@@ -57,8 +57,11 @@ export class Client extends Entity {
 
     sendBuks() {
         const message = [1];
-        for (const entity of Entity.instances.values()) {
-            message.push(entity.index, entity.position.x, entity.position.y);
+        const nearby = quad.query(new AABB(this.position.x, this.position.y, 250, 250));
+        message.push(this.index, this.position.x, this.position.y);
+        for (let i = 0; i < nearby.length; i++) {
+            const entity = nearby[i];
+            message.push(entity.index, entity.center.x, entity.center.y);
         }
         this.talk(message);
     }

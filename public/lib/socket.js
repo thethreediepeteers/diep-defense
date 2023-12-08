@@ -1,4 +1,4 @@
-import { protocol, entities, my } from "./global.js";
+import { protocol, entities } from "./global.js";
 
 const initSocket = () => {
     const socket = new WebSocket(`ws://localhost:3001/`); // localhost only works wi
@@ -23,7 +23,7 @@ function handleMessage(message) {
     if (!m) return;
     switch (m.shift()) {
         case 0:
-            my.index = m[0];
+            window.myIndex = m[0];
             break;
 
         case 1:
@@ -37,8 +37,18 @@ function handleMessage(message) {
                 else {
                     entities.push(entity);
                 }
+                let k = 0;
+                while (k < entities.length) {
+                    const entityIndex = entities[k].index;
+                    if (!m.includes(entityIndex)) {
+                        entities.splice(k, 1);
+                    }
+                    else {
+                        k++;
+                    }
+                }
             }
-            my.me = entities[entities.findIndex((e) => e.index == my.index)];
+            window.me = entities[entities.findIndex((e) => e.index == window.myIndex)];
             break;
 
         default:

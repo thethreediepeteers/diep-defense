@@ -1,4 +1,4 @@
-import { entities, my, socket } from "./global.js";
+import { entities, socket } from "./global.js";
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
@@ -28,12 +28,15 @@ function drawGrid(x, y, cellSize = 32) {
 function drawEntities() {
     for (let i = 0; i < entities.length; i++) {
         const instance = entities[i];
-        let x = entities[i].x,
-            y = entities[i].y;
+        let x = instance.x,
+            y = instance.y;
         x -= 25;
         y -= 25;
         let color = "#000000";
-        if (my.index === instance.index) {
+        if (window.myIndex === instance.index) {
+            ctx.globalAlpha = 0.25;
+            ctx.fillRect(instance.x - 250, instance.y - 250, 500, 500);
+            ctx.globalAlpha = 1;
             color = "#ff0011";
         }
         ctx.fillStyle = color;
@@ -42,18 +45,23 @@ function drawEntities() {
 }
 
 function render() {
+    const me = window.me;
+    if (!me) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     ctx.save();
-    const { me } = my;
     drawGrid(me.x + canvas.width / 2, me.y + canvas.height / 2);
     ctx.translate(-me.x + canvas.width / 2, -me.y + canvas.height / 2);
 
     drawEntities();
     // Draw other game objects here.
     ctx.restore();
+}
 
-    requestAnimationFrame(render);
+function update() {
+    render();
+
+    requestAnimationFrame(update);
 }
 
 document.addEventListener("keydown", (event) => {
@@ -96,4 +104,4 @@ document.addEventListener("keyup", (event) => {
     }
 })
 
-export { render };
+export { update };
