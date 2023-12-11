@@ -16,7 +16,7 @@ export class Client extends Entity {
     }
 
     messageEvent(message) {
-        const m = protocol.decode(message.buffer);
+        const m = protocol.decode(message.data);
         switch (m.shift()) {
             case 0:
                 const mod = m[1] ? 1 : 0;
@@ -57,7 +57,7 @@ export class Client extends Entity {
 
     sendBuks() {
         const message = [1];
-        const nearby = quad.query(new AABB(this.position.x, this.position.y, 250, 250));
+        const nearby = quad.query(new AABB(this.position.x, this.position.y, 500, 500));
         message.push(this.index, this.position.x, this.position.y);
         for (let i = 0; i < nearby.length; i++) {
             const entity = nearby[i];

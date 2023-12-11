@@ -1,7 +1,14 @@
-import { protocol, entities } from "./global.js";
+import { protocol, entities, socket } from "./global.js";
 
 const initSocket = () => {
-    const socket = new WebSocket(`ws://localhost:3001/`); // localhost only works wi
+    let socket;
+
+    if (window.location == "http://localhost:3001/") {
+        socket = new WebSocket("ws://localhost:3001");
+    } 
+    else {
+        socket = new WebSocket("wss://spurious-ninth-play.glitch.me");
+    }
     socket.binaryType = "arraybuffer";
     socket.onopen = () => {
         console.log("Connected to server.");

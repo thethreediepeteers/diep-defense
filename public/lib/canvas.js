@@ -6,6 +6,65 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+function offsetHex(hex) {
+    const r = parseInt(hex.substring(1, 3), 16);
+    const g = parseInt(hex.substring(3, 5), 16);
+    const b = parseInt(hex.substring(5, 7), 16);
+
+    const clamp = (value, min, max) => {
+        return Math.min(Math.max(value, min), max);
+    }
+
+    const newR = clamp(r - 50, 0, 255);
+    const newG = clamp(g - 50, 0, 255);
+    const newB = clamp(b - 50, 0, 255);
+
+    const toHex = (comp) => {
+        const hex = comp.toString(16);
+        return hex.length === 1 ? `0${hex}` : hex;
+    }
+
+    const newHex = `#${toHex(newR)}${toHex(newG)}${toHex(newB)}`;
+
+    return newHex;
+}
+
+function drawShape(x, y, r, angle, sides, color, outline = true, alpha = 1) {
+    if (sides === 4) angle = Math.PI / 4;
+
+    ctx.fillStyle = color;
+    ctx.globalAlpha = alpha;
+
+    ctx.beginPath();
+
+    if (sides === 0) {
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    else {
+        for (let i = 0; i < sides; i++) {
+            const vertexAngle = angle + (i * (Math.PI * 2)) / sides;
+            const x1 = x + r * Math.cos(vertexAngle);
+            const y1 = y + r * Math.sin(vertexAngle);
+            if (i === 0) {
+                ctx.moveTo(x1, y1);
+            } else {
+                ctx.lineTo(x1, y1);
+            }
+        }
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.save();
+    if (outline) {
+        ctx.lineWidth = 9;
+        ctx.strokeStyle = offsetHex(color);
+        ctx.clip();
+        ctx.stroke();
+    }
+    ctx.restore();
+}
+
 function drawGrid(x, y, cellSize = 32) {
     ctx.beginPath();
     for (let i = (canvas.width / 2 - x) % cellSize; i < canvas.width; i += cellSize) {
@@ -30,17 +89,11 @@ function drawEntities() {
         const instance = entities[i];
         let x = instance.x,
             y = instance.y;
-        x -= 25;
-        y -= 25;
-        let color = "#000000";
+        let color = "#FF0000";
         if (window.myIndex === instance.index) {
-            ctx.globalAlpha = 0.25;
-            ctx.fillRect(instance.x - 250, instance.y - 250, 500, 500);
-            ctx.globalAlpha = 1;
-            color = "#ff0011";
+            color = "#32bde3";
         }
-        ctx.fillStyle = color;
-        ctx.fillRect(x, y, 50, 50);
+        drawShape(x, y, 35, 0, 0, color);
     }
 }
 
