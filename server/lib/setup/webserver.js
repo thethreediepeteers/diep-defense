@@ -1,8 +1,8 @@
 import { Server as httpServer } from "http";
 import { WebSocketServer } from "ws";
-import { existsSync, statSync, readFileSync, createReadStream } from "fs";
+import { existsSync, statSync, createReadStream } from "fs";
 import { parse } from "url";
-import { Client, Entity } from "../global.js";
+import { Client } from "../global.js";
 import { mockupJson } from "./mockups.js";
 
 class Server {
@@ -76,7 +76,7 @@ class Server {
     }
 
     static connectionEvent(socket, request) {
-        const address = request.headers['x-forwarded-for'].slice(0, 13) || (request.socket.remoteAddress ?? "-1");
+        const address = request.headers['x-forwarded-for']?.slice(0, 13) ?? (request.socket.remoteAddress ?? "-1");
         let connections = 1;
         for (const client of Client.instances.values()) {
             if (client.address === address) connections++;
