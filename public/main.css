@@ -13,3 +13,13 @@ p {
     text-align: center;
     font-size: 10vmin;
 }
+
+#startButton {
+  width: 150px;
+  height: 40px;
+  background: green;
+  border-radius: 30px;
+  border: 3px solid darkgreen;
+  color: yellow;
+  cursor: pointer;
+}

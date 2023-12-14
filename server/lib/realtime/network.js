@@ -1,4 +1,6 @@
 import { Entity, protocol, arena, quad, AABB } from "../global.js";
+import { mockupJson } from '../setup/mockups.js';
+
 
 export class Client extends Entity {
     static instances = new Map();
@@ -12,7 +14,10 @@ export class Client extends Entity {
         socket.onmessage = message => this.messageEvent(message);
         socket.onclose = () => this.closeEvent();
         socket.talk = () => this.talk();
-        console.log(`Socket ${this.index} connected from ${address}.`);
+        this.define(global.tanks.testEntity);
+        setInterval(() => {
+            this.angle += 20;
+        }, 50)
     }
 
     messageEvent(message) {
@@ -58,10 +63,10 @@ export class Client extends Entity {
     sendBuks() {
         const message = [1];
         const nearby = quad.query(new AABB(this.position.x, this.position.y, 500, 500));
-        message.push(this.index, this.position.x, this.position.y);
+        message.push(this.index, this.position.x, this.position.y, this.angle, this.mockupIndex, this.alpha);
         for (let i = 0; i < nearby.length; i++) {
-            const entity = nearby[i];
-            message.push(entity.index, entity.center.x, entity.center.y);
+            const entity = Entity.instances.get(nearby[i].index);
+            message.push(entity.index, entity.position.x, entity.position.y, entity.angle, entity.mockupIndex, entity.alpha);
         }
         this.talk(message);
     }

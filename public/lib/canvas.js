@@ -1,4 +1,4 @@
-import { entities, socket } from "./global.js";
+import { entities } from "./global.js";
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
@@ -29,8 +29,15 @@ function offsetHex(hex) {
     return newHex;
 }
 
-function drawShape(x, y, r, angle, sides, color, outline = true, alpha = 1) {
-    if (sides === 4) angle = Math.PI / 4;
+function drawEntity(x, y, color = "#00b1de", angle, alpha = 1, size, mockupIndex) {
+
+  
+    drawShape(x, y, size || 35, angle, window.mockups[mockupIndex].shape, color || window.mockups[mockupIndex].color, alpha);
+}
+
+function drawShape(x, y, r, angle, sides, color, strokeColor, alpha) {
+    let add = 0;
+    if (sides === 4) angle += Math.PI / 4;
 
     ctx.fillStyle = color;
     ctx.globalAlpha = alpha;
@@ -56,13 +63,17 @@ function drawShape(x, y, r, angle, sides, color, outline = true, alpha = 1) {
     ctx.closePath();
     ctx.fill();
     ctx.save();
-    if (outline) {
-        ctx.lineWidth = 9;
-        ctx.strokeStyle = offsetHex(color);
-        ctx.clip();
-        ctx.stroke();
-    }
+    ctx.lineWidth = 9;
+    ctx.strokeStyle = strokeColor || offsetHex(color);
+    ctx.clip();
+    ctx.stroke();
     ctx.restore();
+}    
+
+function clearCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 function drawGrid(x, y, cellSize = 32) {
@@ -89,25 +100,31 @@ function drawEntities() {
         const instance = entities[i];
         let x = instance.x,
             y = instance.y;
-        let color = "#FF0000";
+        let color = "#f14e54";
+        let strokeColor = "#a02c2c"
         if (window.myIndex === instance.index) {
-            color = "#32bde3";
+            color = "#00b1de";
+            strokeColor = "#0083a8";
         }
-        drawShape(x, y, 35, 0, 0, color);
+        drawEntity(x, y, color, instance.angle, instance.alpha, instance.size, instance.mockupIndex)
+        //drawShape(x, y, 35, 0, 0, color);
     }
 }
 
 function render() {
     const me = window.me;
     if (!me) return;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    clearCanvas();
+    ctx.fillStyle = "#e6e3e3";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.save();
     drawGrid(me.x + canvas.width / 2, me.y + canvas.height / 2);
     ctx.translate(-me.x + canvas.width / 2, -me.y + canvas.height / 2);
 
     drawEntities();
-    // Draw other game objects here.
+    // Draw other game objects here
+    // You got mail: add stroke style. -tav
     ctx.restore();
 }
 
@@ -118,6 +135,7 @@ function update() {
 }
 
 document.addEventListener("keydown", (event) => {
+    const socket = window.socket;
     switch (event.code) {
         case "KeyW":
             socket.talk(0, 0, 1);
@@ -138,6 +156,7 @@ document.addEventListener("keydown", (event) => {
 })
 
 document.addEventListener("keyup", (event) => {
+    const socket = window.socket;
     switch (event.code) {
         case "KeyW":
             socket.talk(0, 0);

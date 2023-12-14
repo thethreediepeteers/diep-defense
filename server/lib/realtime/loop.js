@@ -14,7 +14,7 @@ const loop = setInterval(function () {
     if (totalTime > 20) {
         console.log(`Lagspike detected. Most recent tick operation took ${totalTime.toFixed(0)}ms.`);
         console.log(`Total clients: ${Client.instances.size}`);
-        console.log(`Total players: ${Entity.instances.size}`);
+        console.log(`Total entities: ${Entity.instances.size}`);
     }
 }, 1000 / 30);
 

@@ -1,4 +1,4 @@
-import { protocol, entities, socket } from "./global.js";
+import { protocol, entities } from "./global.js";
 
 const initSocket = () => {
     let socket;
@@ -36,7 +36,7 @@ function handleMessage(message) {
         case 1:
             let i = 0;
             while (i < m.length) {
-                const entity = { index: m[i++], x: m[i++], y: m[i++] };
+                const entity = { index: m[i++], x: m[i++], y: m[i++], angle: m[i++], mockupIndex: m[i++], alpha: m[i++] };
                 const existingIndex = entities.findIndex((e) => e.index === entity.index);
                 if (existingIndex !== -1) {
                     entities[existingIndex] = entity;

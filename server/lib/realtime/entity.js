@@ -11,6 +11,7 @@ class Entity { // entity class
         this.size = new Vector(width, height);
         this.velocity = new Vector(0, 0);
         this.movement = { up: 0, down: 0, left: 0, right: 0 };
+        this.angle = 0;
     }
 
     destroy() {
@@ -28,6 +29,10 @@ class Entity { // entity class
 
     getAABB() { // returns a new AABB for collision and stuff
         return new AABB(this.position.x, this.position.y, this.size.x / 2, this.size.y / 2, this.index);
+    }
+    
+    define(what) {
+        this.mockupIndex = what.index;
     }
 }
 
