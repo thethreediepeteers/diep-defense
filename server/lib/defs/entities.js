@@ -4,7 +4,7 @@ tanks.testEntity = {
     SHAPE: 0,
     WEAPONS: {
         guns: [{
-            POSITION: [18, 8, 1, 0, 0, 0, 0]
+            POSITION: [50, 10, 1, 0, 0, 0, 0]
         }],
         turrets: []
     }

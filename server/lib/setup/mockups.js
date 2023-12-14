@@ -20,8 +20,8 @@ function generateMockupData() {
             if (tank.WEAPONS.guns) {
                 for (let gun of tank.WEAPONS.guns) {
                     let gunData = {
-                        length: gun.POSITION[0],
-                        width: gun.POSITION[1],
+                        width: gun.POSITION[0] * 3,
+                        height: gun.POSITION[1] * 3,
                         aspect: gun.POSITION[2],
                         xOffset: gun.POSITION[3],
                         yOffset: gun.POSITION[4],

@@ -30,13 +30,13 @@ function offsetHex(hex) {
 }
 
 function drawEntity(x, y, color = "#00b1de", angle, alpha = 1, size, mockupIndex) {
-
-  
-    drawShape(x, y, size || 35, angle, window.mockups[mockupIndex].shape, color || window.mockups[mockupIndex].color, alpha);
+    for (const gun of window.mockups[mockupIndex].guns) {
+        drawShape(x + gun.xOffset + gun.width / 2, y + gun.yOffset + gun.height / 2, gun.width, gun.height, gun.angle, 4, "grey");
+    }
+    drawShape(x, y, size || 50, size || 50, angle, window.mockups[mockupIndex].shape, color || window.mockups[mockupIndex].color, alpha);
 }
 
-function drawShape(x, y, r, angle, sides, color, strokeColor, alpha) {
-    let add = 0;
+function drawShape(x, y, width, height, angle, sides, color, strokeColor, alpha) {
     if (sides === 4) angle += Math.PI / 4;
 
     ctx.fillStyle = color;
@@ -45,14 +45,14 @@ function drawShape(x, y, r, angle, sides, color, strokeColor, alpha) {
     ctx.beginPath();
 
     if (sides === 0) {
-        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.arc(x, y, width / 1.5, 0, Math.PI * 2);
         ctx.fill();
     }
     else {
         for (let i = 0; i < sides; i++) {
             const vertexAngle = angle + (i * (Math.PI * 2)) / sides;
-            const x1 = x + r * Math.cos(vertexAngle);
-            const y1 = y + r * Math.sin(vertexAngle);
+            const x1 = x + width / 2 * Math.cos(vertexAngle);
+            const y1 = y + height / 2 * Math.sin(vertexAngle);
             if (i === 0) {
                 ctx.moveTo(x1, y1);
             } else {
@@ -68,12 +68,12 @@ function drawShape(x, y, r, angle, sides, color, strokeColor, alpha) {
     ctx.clip();
     ctx.stroke();
     ctx.restore();
-}    
+}
 
 function clearCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 function drawGrid(x, y, cellSize = 32) {
@@ -106,8 +106,7 @@ function drawEntities() {
             color = "#00b1de";
             strokeColor = "#0083a8";
         }
-        drawEntity(x, y, color, instance.angle, instance.alpha, instance.size, instance.mockupIndex)
-        //drawShape(x, y, 35, 0, 0, color);
+        drawEntity(x, y, color, instance.angle, instance.alpha, instance.size, instance.mockupIndex);
     }
 }
 
@@ -124,7 +123,7 @@ function render() {
 
     drawEntities();
     // Draw other game objects here
-    // You got mail: add stroke style. -tav
+
     ctx.restore();
 }
 

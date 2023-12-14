@@ -21,7 +21,7 @@ export class Client extends Entity {
     }
 
     messageEvent(message) {
-        const m = protocol.decode(message.data);
+        const m = protocol.decode(message.buffer);
         switch (m.shift()) {
             case 0:
                 const mod = m[1] ? 1 : 0;
