@@ -1,4 +1,4 @@
-import { tanks } from '../entityDefs/entity.js';
+import { tanks } from '../defs/entities.js';
 
 let mockupData = [];
 let mockupIndex = 0;
